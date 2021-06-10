@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/v_table"
+        android:title="Time Table"
+        android:checkable="true"
+        android:icon="@drawable/tabletime"
+        />
+        <item
+        android:id="@+id/v_videocall"
+        android:title="Video Call"
+            android:icon="@drawable/videocallnew"
+        android:checkable="true"
+        />
+        <item
+        android:id="@+id/v_attendance"
+        android:title="Enter/Setup Attendance"
+            android:icon="@drawable/attendancenew"
+        android:checkable="true"
+        />
+        <item
+        android:id="@+id/v_total"
+        android:title="Total Attendance"
+            android:icon="@drawable/salesnew"
+        android:checkable="true"
+        />
+
+    <item
+        android:id="@+id/v_share"
+        android:title="Share"
+        android:checkable="true"
+        />
+
+<!--    <item-->
+<!--        android:title=""-->
+<!--        >-->
+
+<!--        <menu>-->
+
+<!--        </menu>-->
+
+<!--    </item>-->
+
+
+
+
+</menu>

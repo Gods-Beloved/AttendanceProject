@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:fitsSystemWindows="true"
+    android:onClick="constraintClick2"
+    android:background="@drawable/id_background_lec"
+    android:layout_height="match_parent"
+    tools:context=".signin.LecturerId">
+
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginEnd="64dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.45">
+
+        <EditText
+            android:id="@+id/v_username"
+            style="@style/studentEditText"
+            android:hint="Please provide ID number"
+            android:inputType="textPersonName"
+            />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/v_next_btn"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:onClick="enterLecturersDashboard"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/id_login_button_background"
+            android:text="Next"
+            android:textColor="@color/black"
+            app:backgroundTint="@color/id_button" />
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

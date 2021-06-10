@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#393636"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <View
+            android:id="@+id/v_firsline"
+            android:layout_width="18dp"
+            android:layout_height="51dp"
+            android:layout_centerHorizontal="true"
+            android:background="@color/app_gold" />
+        <!--        #FFAA00-->
+
+        <View
+            android:id="@+id/v_secondLine"
+            android:layout_width="20dp"
+            android:layout_marginStart="8dp"
+            android:background="@color/app_red"
+            android:layout_height="100dp"
+            android:layout_toEndOf="@+id/v_firsline" />
+
+        <View
+            android:id="@+id/v_thirdline"
+            android:layout_width="20dp"
+            android:background="#FFFFFF"
+            android:layout_marginStart="8dp"
+            android:layout_height="250dp"
+            android:layout_toEndOf="@+id/v_secondLine"
+
+            />
+
+        <View
+            android:id="@+id/v_fourthline"
+            android:layout_width="20dp"
+            android:background="#0090FF"
+            android:layout_toEndOf="@id/v_thirdline"
+            android:layout_marginStart="8dp"
+            android:layout_height="200dp"
+
+            />
+
+        <View
+            android:id="@+id/v_fifthline"
+            android:layout_width="20dp"
+            android:layout_toRightOf="@id/v_fourthline"
+            android:background="#4AB337"
+            android:layout_marginStart="8dp"
+            android:layout_height="220dp"
+
+
+            />
+
+        <View
+            android:id="@+id/v_sixthline"
+            android:layout_width="20dp"
+            android:layout_toRightOf="@id/v_fifthline"
+            android:layout_marginStart="8dp"
+            android:background="#F4A80F"
+            android:layout_height="150dp"
+
+            />
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/v_relative"
+            android:layout_marginBottom="64dp"
+            android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/v_meet"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:fontFamily="@font/amarante"
+                android:text="Online Meet"
+                android:textColor="@android:color/white"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/v_and"
+                android:textColor="@android:color/white"
+                android:layout_below="@id/v_meet"
+                android:layout_centerHorizontal="true"
+                android:layout_width="wrap_content"
+                android:textSize="30sp"
+                android:fontFamily="@font/amarante"
+                android:layout_height="wrap_content"
+                android:text="And" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" Attendance Checker"
+                android:fontFamily="@font/amarante"
+                android:layout_below="@id/v_and"
+                android:layout_centerHorizontal="true"
+                android:textColor="@android:color/white"
+                android:textSize="30sp"
+
+                />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>

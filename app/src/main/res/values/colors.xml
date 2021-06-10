@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="red">#EBAE1414</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!--     colors of lecturer verification screen-->
+    <color name="back_purple">#5c2294</color>
+    <color name="back_center_purple">#72479b</color>
+    <color name="back_end_purble">#806897</color>
+    <color name="type_button">#46FFFFFF</color>
+
+    <color name="app_gold">#FFAA00</color>
+    <color name="app_red">#EBAE1414</color>
+    <color name="app_blue">#0090FF</color>
+    <color name="app_green">#4AB337</color>
+
+
+    <color name="greenborder">#104703</color>
+
+    <!--    &lt;!&ndash;     colors of proceed verification screen&ndash;&gt;-->
+    <!--    <color name="back_purple">#171717</color>-->
+    <!--    <color name="back_center_purple">#72479b</color>-->
+    <!--    <color name="back_end_purble">#806897</color>-->
+    <!--    <color name="type_button">#46FFFFFF</color>-->
+    <color name="background">#dddddd</color>
+<!--    Moon lit asteroid-->
+    <color name="back">#0f2027</color>
+    <color name="back_center">#203a43</color>
+    <color name="back_end">#2c5364</color>
+
+    <!--    lawrencium-->
+    <color name="backl">#0f0c29</color>
+    <color name="back_centerl">#302b63</color>
+    <color name="back_endl">#24243e</color>
+
+
+
+
+<color name="card_backgroud">#ece9e6</color>
+
+
+
+
+    <color name="back_green">#093011</color>
+    <color name="back_center_green">#2C6329</color>
+    <color name="back_end_green">#165919</color>
+
+    <color name="id_button">#FFFFFF</color>
+
+</resources>

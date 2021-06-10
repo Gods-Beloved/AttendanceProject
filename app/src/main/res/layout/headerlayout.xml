@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="@drawable/header"
+    android:layout_height="190dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/v_stud_lec_name"
+        android:text="Dr. James Godwill Arkoh"
+        android:textAllCaps="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="90dp"
+        android:textStyle="bold"
+        android:textSize="22sp"
+        android:textColor="@color/white"
+        />
+
+</RelativeLayout>
