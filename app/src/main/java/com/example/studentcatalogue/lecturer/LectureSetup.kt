@@ -193,6 +193,8 @@ class LectureSetup : AppCompatActivity() {
                     )
                     generateBtn.text = "Print"
 
+                    setDataToFalse()
+
 
                 } else {
                     printPDF()
@@ -200,6 +202,8 @@ class LectureSetup : AppCompatActivity() {
 
 
             }
+
+
         }
 
 
@@ -281,6 +285,29 @@ class LectureSetup : AppCompatActivity() {
 
             }
         }
+
+
+    }
+
+    private fun setDataToFalse() {
+        val className = user.getString("code").toString().replace("\\s".toRegex(), "")
+
+        val queryCode: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className).whereEqualTo("checked",true)
+
+      queryCode.findInBackground { objects, e ->
+
+          if (e == null ){
+             
+              objects.forEach { 
+                 it.put("checked",false)
+                  it.saveEventually()
+              }
+
+          }else{
+              Toast.makeText(this,e.message,Toast.LENGTH_LONG).show()
+          }
+
+      }
 
 
     }

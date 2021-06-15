@@ -5,11 +5,10 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.studentcatalogue.R
+import com.example.studentcatalogue.course.CourseEnroll
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 object PermissionUtil {
@@ -42,21 +41,19 @@ object PermissionUtil {
                 .setMessage("Please turn on your GPS")
                 .setCancelable(false)
                 .setPositiveButton("OK"){
-                    dialog, which ->
+                        _, _ ->
                     context.startActivity(object : Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS){
 
                     })
                 }
+            .setNegativeButton("Cancel"){
+                _,_->
+                val intent=Intent(context.applicationContext,CourseEnroll::class.java)
+                context.startActivity(intent)
+            }
                 .show()
 
-//        AlertDialog.Builder(context)
-//                .setTitle(context.getString(R.string.enable_gps))
-//                .setMessage(context.getString(R.string.required_for_this_app))
-//                .setCancelable(false)
-//                .setPositiveButton(context.getString(R.string.enable_now)) { _, _ ->
-//                    context.startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
-//                }
-//                .show()
+
     }
 
 }

@@ -5,13 +5,17 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.studentcatalogue.R
+import com.example.studentcatalogue.lecturer.TotalAdapter
 
 class TotalLecturers : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
 
     private lateinit var toolbar: Toolbar
+
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
 
     private lateinit var totalLecturersAdapter: TotalLecturersAdapter
 
@@ -29,10 +33,26 @@ class TotalLecturers : AppCompatActivity() {
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
 
-        recyclerView = findViewById(R.id.v_recycleView)
+        displayTotal()
+
+
+    }
+
+    private fun displayTotal() {
+        swipeRefreshLayout =findViewById(R.id.v_refresh_layout2)
+
+        recyclerView=findViewById(R.id.v_recycleView)
 
         totalLecturersAdapter = TotalLecturersAdapter(applicationContext)
 
         recyclerView.adapter = totalLecturersAdapter
+
+
+
+        swipeRefreshLayout.setOnRefreshListener {
+            displayTotal()
+            swipeRefreshLayout.isRefreshing=false
+        }
+
     }
 }

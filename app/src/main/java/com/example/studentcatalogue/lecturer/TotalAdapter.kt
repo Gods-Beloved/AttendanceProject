@@ -101,41 +101,47 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
                 holder.courseStudent.text = uName
 
 
-                holder.query.findInBackground { objects2, e2 ->
+
+                holder.query.whereEqualTo("indexNumber",index)
+
+                holder.query.getFirstInBackground {
+                        objects2, e2 ->
                     if (e2 == null) {
                         try {
-                            val index2 = objects2[position].getString("indexNumber")
-                            val uName2 = objects2[position].getString("name")
-                            val total = objects2[position].getInt("classAttended")
-                            holder.courseIndex.setTextColor(Color.BLACK)
-                            holder.courseIndex.setBackgroundResource(0)
-                            holder.courseIndex.text = index2
-
-                            holder.courseStudent.setTextColor(Color.GRAY)
-                            holder.courseStudent.setBackgroundResource(0)
-                            holder.courseStudent.text = uName2
-
+//                            val index2 = objects2[position].getString("indexNumber")
+//                            val uName2 = objects2[position].getString("name")
+                            val total = objects2.getInt("classAttended")
+//                            holder.courseIndex.setTextColor(Color.BLACK)
+//                            holder.courseIndex.setBackgroundResource(0)
+//                            holder.courseIndex.text = index2
+//
+//                            holder.courseStudent.setTextColor(Color.GRAY)
+//                            holder.courseStudent.setBackgroundResource(0)
+//                            holder.courseStudent.text = uName2
 
                             holder.total.setTextColor(Color.BLUE)
-                            holder.total.setBackgroundResource(0)
                             holder.total.text = total.toString()
-
-                        }catch (e :IndexOutOfBoundsException){
-                            holder.total.setTextColor(Color.BLUE)
                             holder.total.setBackgroundResource(0)
-                            holder.total.text = "0"
+                        }catch (e :IndexOutOfBoundsException){
+
+
+                            holder.shimmerFrameLayout.stopShimmer()
+                            holder.shimmerFrameLayout.hideShimmer()
                         }
 
-
-
                     } else {
-                        Toast.makeText(context, e2.message, Toast.LENGTH_LONG).show()
+                        holder.total.text = "0"
+                        holder.total.setTextColor(Color.BLUE)
+                        holder.total.setBackgroundResource(0)
+                        holder.shimmerFrameLayout.stopShimmer()
+                        holder.shimmerFrameLayout.hideShimmer()
+
                     }
 
                 }
 
             } else {
-                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+
                 holder.shimmerFrameLayout.stopShimmer()
                 holder.shimmerFrameLayout.hideShimmer()
 

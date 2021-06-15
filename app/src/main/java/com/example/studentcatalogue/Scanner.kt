@@ -352,26 +352,35 @@ import kotlin.math.*
 
                                                             query.whereEqualTo("name", currentUser.getString("accountName"))
 
+
                                                             query.getFirstInBackground { `object`, e ->
 
 
                                                                 if (e == null) {
+                                                                    val valid=`object`.getBoolean("checked")
+                                                                    val username=`object`.getString("name").toString()
+                                                                    if (valid)
+                                                                    {
+                                                                        Toast.makeText(applicationContext,"$username has successful checked attendance",Toast.LENGTH_LONG).show()
+                                                                    }else{
+                                                                        `object`.increment("classAttended")
+                                                                        `object`.put("checked",true)
+                                                                        `object`.saveEventually()
+                                                                        if (timerIsRunning) {
+                                                                            codeScannerView.visibility =
+                                                                                View.GONE
+                                                                            successText.visibility =
+                                                                                View.VISIBLE
+
+                                                                        } else {
+
+                                                                            startTimer()
 
 
-                                                                    `object`.increment("classAttended")
-                                                                    `object`.saveEventually()
-                                                                    if (timerIsRunning) {
-                                                                        codeScannerView.visibility =
-                                                                        View.GONE
-                                                                        successText.visibility =
-                                                                            View.VISIBLE
-
-                                                                    } else {
-
-                                                                        startTimer()
-
-
+                                                                        }
                                                                     }
+
+
 
                                                                 } else {
                                                                     if (e.code == ParseException.OBJECT_NOT_FOUND) {
@@ -388,6 +397,7 @@ import kotlin.math.*
                                                                                 .toString()
                                                                         )
                                                                         obj.put("classAttended", 1)
+                                                                        obj.put("checked",true)
 
                                                                         obj.saveEventually()
                                                                         if (timerIsRunning) {

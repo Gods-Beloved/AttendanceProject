@@ -9,6 +9,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.RelativeLayout
 import androidx.appcompat.app.AppCompatActivity
+import com.example.studentcatalogue.Lecturer
 import com.example.studentcatalogue.MainActivity
 import com.example.studentcatalogue.R
 import com.example.studentcatalogue.signin.LecturerId
@@ -69,7 +70,7 @@ class Splashscreen : AppCompatActivity() {
                 startActivity(intent)
             } else {
 
-                val intent = Intent(applicationContext, LecturerId::class.java)
+                val intent = Intent(applicationContext, Lecturer::class.java)
                 startActivity(intent)
             }
 
