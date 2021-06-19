@@ -10,8 +10,10 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.studentcatalogue.MainActivity
 import com.example.studentcatalogue.R
+import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseUser
 import com.r0adkll.slidr.Slidr
 
@@ -20,6 +22,9 @@ class StudentVerification : AppCompatActivity() {
     private lateinit var userName:EditText
     private lateinit var passWord:EditText
     private lateinit var loginBtn: Button
+
+
+    private lateinit var constraintLayout:ConstraintLayout
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,6 +40,9 @@ class StudentVerification : AppCompatActivity() {
             userName=findViewById(R.id.v_username)
 
             passWord=findViewById(R.id.v_password)
+
+            constraintLayout=findViewById(R.id.v_constraint_layout)
+
 
             if (userName.text.isEmpty() || passWord.text.isEmpty())
             {
@@ -93,6 +101,8 @@ class StudentVerification : AppCompatActivity() {
 
 
     }
+
+
 
     private fun closeKeyboard() {
         val view = this.currentFocus

@@ -1,5 +1,6 @@
 package com.example.studentcatalogue.course
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -62,6 +63,7 @@ class TotalLecturersAdapter(val context: Context?) :
         return size.count()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TotalLecturersViewHolder, position: Int) {
 
         holder.shimmerFrameLayout.showShimmer(true)
@@ -85,11 +87,14 @@ class TotalLecturersAdapter(val context: Context?) :
                 holder.courseLecturer.setBackgroundResource(0)
                 holder.courseCode.setBackgroundResource(0)
 
-
                 val user = ParseUser.getCurrentUser()
+
                 val indexNum = user.getString("indexNumber")
-                val className2 =
-                    objects[position].getString("code").toString().replace("\\s".toRegex(), "")
+
+
+                val className2 = objects[position].getString("code").toString().replace("\\s".toRegex(), "")
+
+
 
 
                 val query: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className2)
@@ -99,11 +104,20 @@ class TotalLecturersAdapter(val context: Context?) :
                     if (e2 == null) {
                         try {
 
-                            val total = objects2.getInt("classAttended")
+                            val total = objects2.getInt("classAttended").toString()
+
+                            val className3="CustomData"
+
+                            val user = ParseUser.getCurrentUser()
+                            val codeNew = objects[position].getString("code").toString().replace("\\s".toRegex(), "")
+
+
+                            val queryTotal= ParseQuery.getQuery<ParseObject>(className3)
+                                .whereEqualTo("course",codeNew).first.getInt("totalLectures").toString()
 
                             holder.courseTotal.setTextColor(Color.BLUE)
                             holder.courseTotal.setBackgroundResource(0)
-                            holder.courseTotal.text = total.toString()
+                            holder.courseTotal.text = "${total}/$queryTotal"
 
 
                         } catch (e: IndexOutOfBoundsException) {
@@ -111,7 +125,7 @@ class TotalLecturersAdapter(val context: Context?) :
 
                             holder.courseTotal.setTextColor(Color.BLUE)
                             holder.courseTotal.setBackgroundResource(0)
-                            holder.courseTotal.text = total.toString()
+                            holder.courseTotal.text =  "0"
                             holder.shimmerFrameLayout.stopShimmer()
                             holder.shimmerFrameLayout.hideShimmer()
 

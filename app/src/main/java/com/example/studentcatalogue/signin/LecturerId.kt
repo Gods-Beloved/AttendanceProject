@@ -9,7 +9,9 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.studentcatalogue.R
+import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseQuery
@@ -19,6 +21,8 @@ import com.r0adkll.slidr.Slidr
 class LecturerId : AppCompatActivity() {
 
     private lateinit var lecturer_signUp:EditText
+
+    private lateinit var constraintLayout: ConstraintLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,14 +40,20 @@ class LecturerId : AppCompatActivity() {
         dialog.dismiss()
 
 
+        constraintLayout=findViewById(R.id.v_constraintLayout)
+
+
 
        lecturer_signUp= findViewById(R.id.v_username)
 
         val lecturerId = lecturer_signUp.text.toString()
 
 
+
+
         if (lecturer_signUp.text.isEmpty()) {
-            Toast.makeText(this, "Please enter your Lecturer ID number", Toast.LENGTH_LONG).show()
+
+            showSnackbar(constraintLayout,"Enter your lecturer ID number")
 
         } else {
             dialog.show()
@@ -103,6 +113,11 @@ class LecturerId : AppCompatActivity() {
         }
     }
 
+    private fun showSnackbar(v:View,message:String){
+        val snackbar= Snackbar.make(v,message, Snackbar.LENGTH_SHORT)
+        snackbar.show()
+
+    }
 
     private fun signUp(
         username: String,

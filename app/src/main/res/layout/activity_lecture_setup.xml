@@ -120,6 +120,15 @@
 
         </LinearLayout>
 
+<!--        <Spinner-->
+<!--            android:id="@+id/v_classrooms"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_margin="8dp"-->
+<!--            android:layout_gravity="start"-->
+<!--            android:backgroundTint="@color/black"-->
+<!--            android:spinnerMode="dropdown"-->
+<!--            android:layout_height="wrap_content"/>-->
+
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/v_generate"

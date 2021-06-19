@@ -1,12 +1,13 @@
 package com.example.studentcatalogue.lecturer
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
+
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentcatalogue.R
 import com.facebook.shimmer.ShimmerFrameLayout
@@ -16,24 +17,12 @@ import com.parse.ParseUser
 
 class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.TotalViewHolder>() {
 
-//    private lateinit var mListener: OnItemClickListener
-//
-//    interface OnItemClickListener {
-//        fun onItemClick(position: Int, intent: Intent)
-//        //  fun onItemClick(position: Int)
-//
-//    }
-//
-//
-//    fun setOnItemClickListener(listener: OnItemClickListener) {
-//        mListener = listener
-//    }
 
 
     class TotalViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
-        val user = ParseUser.getCurrentUser()
+        val user: ParseUser = ParseUser.getCurrentUser()
         var className = user.getString("code").toString().replace("\\s".toRegex(), "")
 
 
@@ -41,7 +30,7 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
 
 
         val query: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className)
-        val querystudents: ParseQuery<ParseObject> =
+        val queryStudents: ParseQuery<ParseObject> =
             ParseQuery.getQuery<ParseObject>("Student").whereEqualTo("level", level)
         val courseIndex: TextView = itemView.findViewById(R.id.v_indexNumber_coursecode)
         val courseStudent: TextView = itemView.findViewById(R.id.v_student_lecturer_name)
@@ -57,7 +46,6 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
 
         val v = LayoutInflater.from(context).inflate(R.layout.total_item, parent, false)
 
-
         return TotalViewHolder(v)
     }
 
@@ -65,19 +53,24 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
     override fun getItemCount(): Int {
         val user = ParseUser.getCurrentUser()
         val level = user.get("level").toString()
-        val querystudents: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>("Student").whereEqualTo("level", level)
+        val queryStudent: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>("Student").whereEqualTo("level", level)
 
-        return querystudents.count()
+        return queryStudent.count()
         //size.count()
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: TotalViewHolder, position: Int) {
+
+
+
         holder.shimmerFrameLayout.startShimmer()
         holder.shimmerFrameLayout.showShimmer(true)
 
 
 
-        holder.querystudents.findInBackground { objects, e ->
+
+        holder.queryStudents.findInBackground { objects, e ->
 
             if (e == null) {
 
@@ -86,8 +79,6 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
 
                 val index = objects[position].getString("indexNumber")
                 val uName = objects[position].getString("userName")
-
-
 
 
                 //  holder.courseCode.setPadding(0,0,0,0)
@@ -102,25 +93,30 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
 
 
 
+
+
+
+
                 holder.query.whereEqualTo("indexNumber",index)
 
                 holder.query.getFirstInBackground {
                         objects2, e2 ->
                     if (e2 == null) {
                         try {
-//                            val index2 = objects2[position].getString("indexNumber")
-//                            val uName2 = objects2[position].getString("name")
-                            val total = objects2.getInt("classAttended")
-//                            holder.courseIndex.setTextColor(Color.BLACK)
-//                            holder.courseIndex.setBackgroundResource(0)
-//                            holder.courseIndex.text = index2
-//
-//                            holder.courseStudent.setTextColor(Color.GRAY)
-//                            holder.courseStudent.setBackgroundResource(0)
-//                            holder.courseStudent.text = uName2
+
+                            val total = objects2.getInt("classAttended").toString()
+
+                            val className3="CustomData"
+
+                            val user: ParseUser = ParseUser.getCurrentUser()
+                            val className = user.getString("code").toString().replace("\\s".toRegex(), "")
+
+
+                            val queryTotal= ParseQuery.getQuery<ParseObject>(className3)
+                                .whereEqualTo("course",className).first.getInt("totalLectures").toString()
 
                             holder.total.setTextColor(Color.BLUE)
-                            holder.total.text = total.toString()
+                            holder.total.text = "${total}/$queryTotal"
                             holder.total.setBackgroundResource(0)
                         }catch (e :IndexOutOfBoundsException){
 
@@ -150,27 +146,10 @@ class TotalAdapter(val context: Context?) : RecyclerView.Adapter<TotalAdapter.To
         }
 
 
-//        holder.itemView.setOnClickListener {
-//            val position2 = holder.adapterPosition
-//
-//            val value = holder.courseIndex.text.trim().toString()
-//
-//            val intent = Intent(context, Scanner::class.java)
-//            intent.putExtra("courseCode", value)
-//
-//
-//
-//           mListener.onItemClick(position2, intent)
-//        }
 
-//        holder.itemView.setOnLongClickListener {
-//            val pos=holder.adapterPosition
-//            mListener.onItemClick(pos)
-//            return@setOnLongClickListener true
-//
-//        }
 
     }
+
 
 
 }

@@ -10,12 +10,15 @@
     1) Go to your App Dashboard at Back4App website.
     2) Navigate to app's settings : Click on Server Settings -> Core Settings block -> SETTINGS
     -->
-    <string name="back4app_app_id" translatable="false">Aq0YEGkETGALyBeH0Wi6U5QFxt8eCF4S5f7QQhYc</string>
-    <string name="back4app_client_key" translatable="false">BgOHMwJaZszgjyL82OiQrFllVBJmlg0lByPWQgbi</string>
+    <string name="back4app_app_id" translatable="false">LfIjxjSev0ARPSBh8XT34D5Z6KmitAtPyAm4kaMo</string>
+    <string name="back4app_client_key" translatable="false">QEvEEtgpCFhlByCtjtribkJT977tv8gsZojlNB5W</string>
 
 
+    //Zoom client keys
     <string name="appKey">zNAms3afUjsPDe4p1uz6l5vm7pPH85rIMnVc</string>
     <string name="appSecret">gQHcEF0Y2LTJhLN1WRJgOskQL0rH4FaVUjKq</string>
+
+
     <string name="draweropen">Open</string>
     <string name="drawerclose">Close</string>
 

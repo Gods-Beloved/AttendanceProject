@@ -155,8 +155,6 @@ toolbar=findViewById(R.id.v_attendance_check_bar)
     override fun onItemClick(position: Int,intent: Intent) {
 
 
-
-
         startActivity(intent)
 
 

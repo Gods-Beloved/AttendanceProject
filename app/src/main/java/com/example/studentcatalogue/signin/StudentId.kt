@@ -10,7 +10,9 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.studentcatalogue.R
+import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseQuery
@@ -22,6 +24,8 @@ class StudentId : AppCompatActivity() {
     private lateinit var id_signUp: EditText
 
     private lateinit var id_signUp_button: Button
+
+    private lateinit var constraintLayout: ConstraintLayout
 
 
     // private lateinit var shimmer:ShimmerFrameLayout
@@ -36,6 +40,10 @@ class StudentId : AppCompatActivity() {
         id_signUp_button = findViewById(R.id.v_next_btn)
 
         id_signUp_button.setOnClickListener {
+
+            constraintLayout=findViewById(R.id.v_constraint_layout)
+
+
 
             val dialog = ProgressDialog.show(
                     this, "",
@@ -52,9 +60,9 @@ class StudentId : AppCompatActivity() {
 
 
             if (id_signUp.text.isEmpty()) {
-                Toast.makeText(this, "Please enter your student ID number", Toast.LENGTH_LONG).show()
-
+                showSnackbar(constraintLayout,"Please enter your student ID number")
             } else {
+
                 dialog.show()
 
                 val query = ParseQuery.getQuery<ParseObject>("Student")
@@ -158,6 +166,12 @@ class StudentId : AppCompatActivity() {
 
             }
         }
+
+    }
+
+    private fun showSnackbar(v:View,message:String){
+        val snackbar= Snackbar.make(v,message, Snackbar.LENGTH_SHORT)
+        snackbar.show()
 
     }
 

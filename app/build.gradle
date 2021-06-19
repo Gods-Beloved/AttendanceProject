@@ -44,11 +44,13 @@ android {
 
 
         packagingOptions {
+
             exclude 'com/itextpdf/io/font/cmap_info.txt'
             exclude 'com/itextpdf/io/font/cmap/*'
 
             exclude 'lib/arm64-v8a/libc++_shared.so'
             pickFirst '**/*.so'
+
         }
 
 
@@ -57,10 +59,12 @@ android {
 dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
     implementation 'com.google.android:flexbox:2.0.1'
     implementation "com.github.parse-community.Parse-SDK-Android:parse:1.25.0"
     implementation 'androidx.core:core-ktx:1.5.0'
+    implementation 'io.github.ShawnLin013:number-picker:2.4.13'
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation 'com.itextpdf:itextg:5.5.10'
     implementation 'com.itextpdf:itext7-core:7.0.2'

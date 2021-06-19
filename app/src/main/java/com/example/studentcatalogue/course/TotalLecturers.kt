@@ -1,13 +1,11 @@
 package com.example.studentcatalogue.course
 
 import android.os.Bundle
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.studentcatalogue.R
-import com.example.studentcatalogue.lecturer.TotalAdapter
 
 class TotalLecturers : AppCompatActivity() {
 
@@ -32,9 +30,7 @@ class TotalLecturers : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-
         displayTotal()
-
 
     }
 

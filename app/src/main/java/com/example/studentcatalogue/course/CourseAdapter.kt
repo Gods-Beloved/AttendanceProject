@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studentcatalogue.R
 import com.example.studentcatalogue.Scanner
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -119,27 +120,40 @@ class CourseAdapter(val context: Context?) : RecyclerView.Adapter<CourseAdapter.
             val className="CustomData"
             val queryCode: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className)
 
+           val valueTwo= holder.courseCode.text.trim().toString()
 
+            val value =valueTwo.replace("\\s".toRegex(), "")
 
-            queryCode.getInBackground("3Iw08trymI") { `object`, e ->
-                if (e == null) {
+queryCode.whereEqualTo("course",value)
 
-                   val current= `object`.getString("latestCode").toString()
+            queryCode.getFirstInBackground { `object`, e ->
+                if (e == null){
+                    val current= `object`.getString("latestCode").toString()
+
                     val position2 = holder.adapterPosition
 
-                    val value = holder.courseCode.text.trim().toString()
+                    val value2 = holder.courseCode.text.trim().toString()
 
 
                     val intent = Intent(context, Scanner::class.java)
-                    intent.putExtra("courseCode", value)
+                    intent.putExtra("courseCode", value2)
                     intent.putExtra("codeGen",current)
 
 
                     mListener.onItemClick(position2, intent)
-
-                } else {
-                    Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
                 }
+                else {
+                    if(e.code == ParseException.OBJECT_NOT_FOUND){
+                        Toast.makeText(context,"No lecture setup currently available for $valueTwo", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(context, e.message, Toast.LENGTH_SHORT).show()
+                    }
+
+
+                }
+            }
+
+
             }
 
 
@@ -152,4 +166,3 @@ class CourseAdapter(val context: Context?) : RecyclerView.Adapter<CourseAdapter.
     }
 
 
-}

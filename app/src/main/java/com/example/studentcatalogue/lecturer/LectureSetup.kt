@@ -1,17 +1,14 @@
 package com.example.studentcatalogue.lecturer
 
+import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.os.Environment
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.text.format.DateFormat
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
@@ -37,7 +34,6 @@ import com.itextpdf.layout.property.HorizontalAlignment
 import com.itextpdf.layout.property.TextAlignment
 import com.itextpdf.text.DocumentException
 import com.journeyapps.barcodescanner.BarcodeEncoder
-import com.parse.GetCallback
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -55,6 +51,7 @@ class LectureSetup : AppCompatActivity() {
 
     private lateinit var courseText: TextInputEditText
     private lateinit var toolbar: Toolbar
+    private lateinit var spinner: Spinner
     private lateinit var dateText: TextView
     private lateinit var timeText: TextView
     private lateinit var generateBtn: Button
@@ -114,6 +111,9 @@ class LectureSetup : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
+       // spinner = findViewById(R.id.v_classrooms)
+
+
         selectDate = findViewById(R.id.v_setDate)
         selectTime = findViewById(R.id.v_setTime)
         courseText = findViewById(R.id.c_coursename)
@@ -125,83 +125,145 @@ class LectureSetup : AppCompatActivity() {
         generateBtn = findViewById(R.id.v_generate)
 
 
+
+
         generateBtn.text = "Generate"
         val user = ParseUser.getCurrentUser()
         val courseCode = user.getString("code").toString()
 
+
+
+        val level=user.getString("level").toString()
+
+         ParseQuery.getQuery<ParseObject>("Student").whereEqualTo("level", level).findInBackground { objects, e ->
+             if(e == null )
+             {
+                 val classrooms= arrayListOf<String>()
+                 objects.forEach {
+                     classrooms.add(it.getString("userName").toString())
+                 }
+
+                 val adapter= ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,classrooms)
+                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+                // spinner.adapter=adapter
+             }else{
+                 Toast.makeText(applicationContext,e.message,Toast.LENGTH_LONG).show()
+             }
+         }
+
+
+
         courseText.setText(courseCode)
 
         generateBtn.setOnClickListener {
+            AlertDialog.Builder(this)
+                .setTitle("Submit?")
+                .setMessage("Do you want to confirm current lecture setup?")
+                .setPositiveButton("Yes") {
+                        dialog, _ ->
 
-            val date = dateText.text.trim().toString()
+                    val date = dateText.text.trim().toString()
 
-            val time = timeText.text.trim().toString()
+                    val time = timeText.text.trim().toString()
 
 
-            val current= getRandomString(10)
+                    val current= getRandomString(10)
+                    val className="CustomData"
 
-            val className="CustomData"
+                    val obj = ParseObject.create(className)
 
-            val queryCode: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className)
 
-            queryCode.getInBackground("3Iw08trymI") { `object`, e ->
-                if (e == null) {
-                    `object`.put("latestCode", current)
+                    val queryCode: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className)
 
-                    `object`.saveInBackground()
-                } else {
-                    Toast.makeText(this, e.message, Toast.LENGTH_SHORT).show();
+                    val value:String = courseCode.replace("\\s".toRegex(), "")
+
+                    queryCode.whereEqualTo("course",value)
+
+                    queryCode.getFirstInBackground { `object`, e ->
+
+                        if(e == null)
+                        {
+                            `object`.increment("totalLectures")
+                            `object`.put("latestCode",current)
+
+                            `object`.saveEventually()
+
+                        }else{
+                            if(e.code == com.parse.ParseException.OBJECT_NOT_FOUND){
+
+                                obj.put("course",value)
+                                obj.put("latestCode",current)
+                                obj.put("totalLectures",1)
+
+                                obj.saveEventually()
+
+                            }
+                        }
+
+                    }
+
+
+
+
+
+
+                    val appSecreteCode = "$time $date $courseCode $current YHWH"
+
+                    if (date == ("") || time == "") {
+                        Toast.makeText(
+                            applicationContext,
+                            "Please set date and time to generate code",
+                            Toast.LENGTH_LONG
+                        ).show()
+
+
+
+
+                    } else {
+
+                        if (generateBtn.text != "Print") {
+                            val writer = MultiFormatWriter()
+
+
+                            val matrix = writer.encode(appSecreteCode, BarcodeFormat.QR_CODE, 250, 250)
+
+                            val encoder = BarcodeEncoder()
+
+                            val bitmap = encoder.createBitmap(matrix)
+
+
+                            output.setImageBitmap(bitmap)
+                            output.visibility = View.VISIBLE
+                            succesText.visibility = View.VISIBLE
+
+                            Toast.makeText(this,appSecreteCode,Toast.LENGTH_LONG).show()
+
+                            createPDF(
+                                StringBuilder(appPath).append(fileprint).toString(),
+                                appSecreteCode,
+                                date
+                            )
+                            generateBtn.text = "Print"
+
+                            setDataToFalse()
+
+
+                        } else {
+                            printPDF()
+                        }
+
+
+                    }
+
+
+                    dialog.dismiss()
                 }
-            }
-
-
-            val appSecreteCode = "$time $date $courseCode $current YHWH"
-
-            if (date == ("") || time == "") {
-                Toast.makeText(
-                    applicationContext,
-                    "Please set date and time to generate code",
-                    Toast.LENGTH_LONG
-                ).show()
-
-
-
-
-            } else {
-
-                if (generateBtn.text != "Print") {
-                    val writer = MultiFormatWriter()
-
-
-                    val matrix = writer.encode(appSecreteCode, BarcodeFormat.QR_CODE, 250, 250)
-
-                    val encoder = BarcodeEncoder()
-
-                    val bitmap = encoder.createBitmap(matrix)
-
-
-                    output.setImageBitmap(bitmap)
-                    output.visibility = View.VISIBLE
-                    succesText.visibility = View.VISIBLE
-
-                    Toast.makeText(this,appSecreteCode,Toast.LENGTH_LONG).show()
-
-                    createPDF(
-                        StringBuilder(appPath).append(fileprint).toString(),
-                        appSecreteCode,
-                        date
-                    )
-                    generateBtn.text = "Print"
-
-                    setDataToFalse()
-
-
-                } else {
-                    printPDF()
+                .setNegativeButton("No"){
+                        dialog,_->dialog.dismiss()
                 }
+                .show()
 
-
-            }
 
 
         }
@@ -250,7 +312,7 @@ class LectureSetup : AppCompatActivity() {
                 calendar1.set(0, 0, 0, picker.hour, picker.minute)
                 val olddate = hours24.format(calendar1.time)
 
-                calendar1.add(Calendar.HOUR, 2)
+                calendar1.add(Calendar.MINUTE,20)
 
 
                 val newdate = hours24.format(calendar1.time)
@@ -419,7 +481,7 @@ class LectureSetup : AppCompatActivity() {
         )
     }
 
-    fun getRandomString(length: Int) : String {
+    private fun getRandomString(length: Int) : String {
         val allowedChars = ('A'..'Z') + ('a'..'z') + ('0'..'9')
         return (1..length)
             .map { allowedChars.random() }

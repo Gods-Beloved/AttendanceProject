@@ -5,7 +5,7 @@
         <item name="android:textCursorDrawable">@null</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">45dp</item>
-        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginBottom">8dp</item>
         <item name="android:background">@drawable/edittext_background</item>
         <item name="android:ems">10</item>
         <item name="android:gravity">center</item>
