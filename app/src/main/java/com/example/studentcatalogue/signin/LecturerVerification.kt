@@ -6,20 +6,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.Button
-import android.widget.EditText
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.studentcatalogue.Lecturer
 import com.example.studentcatalogue.R
+import com.parse.ParseException
 import com.parse.ParseUser
+import com.parse.RequestPasswordResetCallback
 import com.r0adkll.slidr.Slidr
 
 class LecturerVerification : AppCompatActivity() {
 
     private lateinit var userName:EditText
     private lateinit var passWord:EditText
+    private lateinit var passWordReset:TextView
     private lateinit var loginBtn: Button
+  //  private lateinit var spinner:Spinner
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +31,15 @@ class LecturerVerification : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_lecturer_verify)
         Slidr.attach(this)
+
+
+//spinner=findViewById(R.id.v_level_spinner)
+
+        passWordReset = findViewById(R.id.v_reset_password)
+
+
+
+
         loginBtn=findViewById(R.id.v_login_button)
 
         loginBtn.setOnClickListener {
@@ -61,7 +72,6 @@ class LecturerVerification : AppCompatActivity() {
                         val value: String
                         if (extras != null) {
 
-
                             value = extras.getString("username").toString()
 
                             if (userName.text.toString() == value) {
@@ -71,15 +81,25 @@ class LecturerVerification : AppCompatActivity() {
                             }
                         }
 
-
-                    } else {
+                    }
+                    else {
                         // Signup failed. Look at the ParseException to see what happened.
                         ParseUser.logOut()
                         dialog.dismiss()
                         if (e != null) {
-                            dialog.dismiss()
-                            ParseUser.logOut()
-                            Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+
+
+                            if (e.code == ParseException.CONNECTION_FAILED){
+                                dialog.dismiss()
+                                ParseUser.logOut()
+                                Toast.makeText(applicationContext,"No internet detected",Toast.LENGTH_LONG).show()
+                            }else{
+                                dialog.dismiss()
+                                ParseUser.logOut()
+                                Toast.makeText(this, e.message, Toast.LENGTH_LONG).show()
+
+                            }
+
                         }
                     }
 
@@ -87,6 +107,16 @@ class LecturerVerification : AppCompatActivity() {
             }
 
             closeKeyboard()
+
+        }
+
+        passWordReset.setOnClickListener {
+
+            Toast.makeText(this,"Reset Password Works",Toast.LENGTH_LONG).show()
+
+            val user=ParseUser.getCurrentUser()
+
+            ParseUser.requestPasswordReset(user.email)
 
         }
 
@@ -102,9 +132,19 @@ class LecturerVerification : AppCompatActivity() {
         }
     }
 
+
+
     fun constraintClick(view: View) {
         closeKeyboard()
     }
+
+//    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+//
+//    }
+//
+//    override fun onNothingSelected(parent: AdapterView<*>?) {
+//
+//    }
 
 
 }

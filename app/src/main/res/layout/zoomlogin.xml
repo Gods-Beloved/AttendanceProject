@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/round_corners"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
 
     <TextView
@@ -14,10 +14,10 @@
         android:layout_gravity="center"
         android:layout_margin="8dp"
         android:textAllCaps="true"
-        android:textColor="@color/black"
+        android:textColor="@color/app_red"
         android:fontFamily="@font/cagliostro2"
-        android:text="Torch Zoom Meet"
-        android:textSize="19sp" />
+        android:text="Catalogue Zoom Meet"
+        android:textSize="20sp" />
 
 
 
@@ -25,8 +25,12 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/email_layout"
         android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
         android:layout_marginEnd="16dp"
+        app:boxCornerRadiusTopStart="6dp"
+        app:boxCornerRadiusBottomStart="6dp"
+        app:boxCornerRadiusTopEnd="30dp"
+        app:boxCornerRadiusBottomEnd="10dp"
+
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -35,7 +39,7 @@
             android:inputType="textEmailAddress"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email" />
+            android:hint="Zoom Email" />
     </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -44,7 +48,12 @@
         android:id="@+id/pw_layout"
         android:layout_marginTop="8dp"
         android:layout_marginStart="16dp"
+        android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
+        app:boxCornerRadiusTopStart="6dp"
+        app:boxCornerRadiusBottomStart="6dp"
+        app:boxCornerRadiusTopEnd="30dp"
+        app:boxCornerRadiusBottomEnd="10dp"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -53,7 +62,7 @@
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Password" />
+            android:hint="Zoom Password" />
     </com.google.android.material.textfield.TextInputLayout>
 </LinearLayout>
 

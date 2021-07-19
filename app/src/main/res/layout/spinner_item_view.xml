@@ -6,7 +6,7 @@
     android:ellipsize="marquee"
     android:textAlignment="inherit"
     android:id="@android:id/text1"
-    android:textSize="18sp"
+    android:textSize="14sp"
     android:background="@color/red"
     android:textColor="@color/white"
     >

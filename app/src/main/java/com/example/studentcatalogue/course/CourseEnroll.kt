@@ -66,7 +66,7 @@ toolbar=findViewById(R.id.v_attendance_check_bar)
 
 
         recyclerView = findViewById(R.id.v_recycleView)
-        val user = ParseUser.getCurrentUser()
+
 
 
 

@@ -50,19 +50,57 @@
             android:id="@+id/v_login_button"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:layout_marginBottom="16dp"
+
             android:background="@drawable/id_login_button_background"
             android:text="Login"
+            android:layout_marginBottom="12dp"
             android:textColor="@color/black"
             app:backgroundTint="@color/id_button" />
 
-        <TextView
-            android:id="@+id/v_forgot_pword"
+<!--        <Spinner-->
+<!--            android:id="@+id/v_level_spinner"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_marginBottom="16dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:backgroundTint="@color/white"-->
+<!--            android:spinnerMode="dropdown"-->
+<!--            android:layout_height="wrap_content"/>-->
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:gravity="center"
-            android:text="Forgot Password?"
-            android:textColor="@color/white" />
+            android:layout_height="wrap_content">
+
+
+            <TextView
+                android:id="@+id/v_forgot_pword"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Forgot Password? "
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/v_reset_password"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Reset"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="@+id/v_forgot_pword"
+                app:layout_constraintStart_toEndOf="@+id/v_forgot_pword"
+                app:layout_constraintTop_toTopOf="@+id/v_forgot_pword" />
+
+
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     </LinearLayout>
 
 

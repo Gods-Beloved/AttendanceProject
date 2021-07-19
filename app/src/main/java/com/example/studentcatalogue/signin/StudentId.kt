@@ -21,9 +21,9 @@ import com.r0adkll.slidr.Slidr
 
 class StudentId : AppCompatActivity() {
 
-    private lateinit var id_signUp: EditText
+    private lateinit var idSignUp: EditText
 
-    private lateinit var id_signUp_button: Button
+    private lateinit var idSignUpButton: Button
 
     private lateinit var constraintLayout: ConstraintLayout
 
@@ -35,11 +35,11 @@ class StudentId : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_student_idcheck)
 
-        id_signUp = findViewById(R.id.v_username)
+        idSignUp = findViewById(R.id.v_username)
 
-        id_signUp_button = findViewById(R.id.v_next_btn)
+        idSignUpButton = findViewById(R.id.v_next_btn)
 
-        id_signUp_button.setOnClickListener {
+        idSignUpButton.setOnClickListener {
 
             constraintLayout=findViewById(R.id.v_constraint_layout)
 
@@ -54,12 +54,12 @@ class StudentId : AppCompatActivity() {
 
 
 
-            id_signUp = findViewById(R.id.v_username)
+            idSignUp = findViewById(R.id.v_username)
 
-            val studentId = id_signUp.text.toString()
+            val studentId = idSignUp.text.toString()
 
 
-            if (id_signUp.text.isEmpty()) {
+            if (idSignUp.text.isEmpty()) {
                 showSnackbar(constraintLayout,"Please enter your student ID number")
             } else {
 
@@ -84,18 +84,26 @@ class StudentId : AppCompatActivity() {
                         dialog.dismiss()
 
                     } else {
-                        if (e.code == ParseException.OBJECT_NOT_FOUND) {
+                        when (e.code) {
+                            ParseException.OBJECT_NOT_FOUND -> {
 
-                            dialog.dismiss()
-                            Toast.makeText(
+                                dialog.dismiss()
+                                Toast.makeText(
                                     this,
                                     "Student with Id $studentId was not found in the current semester.Contact your exams officer",
                                     Toast.LENGTH_LONG
-                            ).show()
+                                ).show()
 
-                        } else {
-                            dialog.dismiss()
-                            Toast.makeText(this, e.message + e.code.toString(), Toast.LENGTH_LONG).show()
+                            }
+                            ParseException.CONNECTION_FAILED ->
+                            {
+                                dialog.dismiss()
+                                Toast.makeText(applicationContext,"No internet detected",Toast.LENGTH_LONG).show()
+                            }
+                            else -> {
+                                dialog.dismiss()
+                                Toast.makeText(this, e.message + e.code.toString(), Toast.LENGTH_LONG).show()
+                            }
                         }
 
                         //shimmer.stopShimmer()
@@ -150,14 +158,21 @@ class StudentId : AppCompatActivity() {
                 intent.putExtra("username", user2)
                 startActivity(intent)
             } else {
-                if (it.code == ParseException.USERNAME_TAKEN) {
-                    ParseUser.logOut()
-                    val intent = Intent(applicationContext, StudentVerification::class.java)
-                    intent.putExtra("username", username)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, it.code.toString(), Toast.LENGTH_LONG).show()
-                    ParseUser.logOut()
+                when (it.code) {
+                    ParseException.USERNAME_TAKEN -> {
+                        ParseUser.logOut()
+                        val intent = Intent(applicationContext, StudentVerification::class.java)
+                        intent.putExtra("username", username)
+                        startActivity(intent)
+                    }
+                    ParseException.CONNECTION_FAILED -> {
+                        ParseUser.logOut()
+                        Toast.makeText(applicationContext,"No internet detected",Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        Toast.makeText(this, it.code.toString(), Toast.LENGTH_LONG).show()
+                        ParseUser.logOut()
+                    }
                 }
 
                 //                shimmer.stopShimmer()

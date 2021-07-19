@@ -3,6 +3,7 @@ package com.example.studentcatalogue
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -24,6 +25,7 @@ import com.google.android.material.textfield.TextInputEditText
 import com.parse.ParseUser
 import us.zoom.sdk.*
 
+@Suppress("DEPRECATION")
 class Lecturer : AppCompatActivity(),NavigationView.OnNavigationItemSelectedListener {
 
     private var doubleBackToExitPressedOnce = false
@@ -203,15 +205,38 @@ class Lecturer : AppCompatActivity(),NavigationView.OnNavigationItemSelectedList
     fun dashBoardClick(view: View) {
 
         when (view.id) {
-            R.id.v_start_class ->
+
+            R.id.v_stud_time_table->
+                if (isNetworkAvailable(this)){
+                    timetable()
+                }else{
+                    Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+                }
+            R.id.v_stud_online->
+                if (isNetworkAvailable(this)){
+                    online()
+                }else{
+                    Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+                }
+            R.id.v_start_class->
+                if (isNetworkAvailable(this)){
                 startClass()
-            R.id.v_stud_online ->
-                online()
-            R.id.v_stud_time_table ->
-                timetable()
-            R.id.v_stud_totalAttended ->
+            }else{
+                Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+            }
+
+            R.id.v_stud_totalAttended-> if (isNetworkAvailable(this)){
                 totalStudents()
-        }
+            }else{
+                Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+            }
+
+
+
+
+
+
+    }
     }
 
     private fun totalStudents() {
@@ -253,10 +278,28 @@ class Lecturer : AppCompatActivity(),NavigationView.OnNavigationItemSelectedList
         when(item.itemId){
 
             R.id.v_table->
-                timetable()
-            R.id.v_videocall->online()
-            R.id.v_attendance->startClass()
-            R.id.v_total->totalStudents()
+                if (isNetworkAvailable(this)){
+                    timetable()
+                }else{
+                    Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+                }
+            R.id.v_videocall->
+                if (isNetworkAvailable(this)){
+                    online()
+                }else{
+                    Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+                }
+            R.id.v_attendance-> if (isNetworkAvailable(this)){
+                startClass()
+            }else{
+                Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+            }
+
+            R.id.v_total-> if (isNetworkAvailable(this)){
+               totalStudents()
+            }else{
+                Toast.makeText(this,"Please connect to the internet",Toast.LENGTH_LONG).show()
+            }
 
         }
 
@@ -266,6 +309,13 @@ class Lecturer : AppCompatActivity(),NavigationView.OnNavigationItemSelectedList
     private fun closeDrawer() {
         drawerLayout.closeDrawer(GravityCompat.START)
     }
+
+        private fun  isNetworkAvailable(context:Context):Boolean {
+        val conMan = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        return conMan.activeNetworkInfo != null && conMan.activeNetworkInfo!!.isConnected
+    }
+
+
 
 
 

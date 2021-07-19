@@ -5,9 +5,13 @@ package com.example.studentcatalogue.lecturer
 import android.app.AlertDialog
 import android.graphics.Color
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -86,6 +90,8 @@ class TotalStudents : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         ParseQuery.getQuery<ParseObject>("Student").whereEqualTo("level", level)
 
 
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_total_students)
@@ -128,14 +134,16 @@ class TotalStudents : AppCompatActivity(), AdapterView.OnItemSelectedListener {
         when (parent!!.getItemAtPosition(position).toString()) {
 
 
-            "Total" ->
+            "Total Students" ->
                 displayTotal()
 
-            "Current" -> displayCurrent()
+            "Student Present" -> displayCurrent()
 
         }
 
     }
+
+
 
     private fun displayCurrent() {
         recyclerView = findViewById(R.id.v_recycleView)
@@ -346,6 +354,9 @@ query.whereEqualTo("checked",true)
         cell.setBorder(Border.NO_BORDER)
         return cell
     }
+
+
+
 
 
 

@@ -1,9 +1,11 @@
 package com.example.studentcatalogue.lecturer
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.Looper
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.text.format.DateFormat
@@ -14,6 +16,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import com.example.studentcatalogue.PdfDocumentAdapter
 import com.example.studentcatalogue.R
+import com.google.android.gms.location.*
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.timepicker.MaterialTimePicker
@@ -34,6 +37,7 @@ import com.itextpdf.layout.property.HorizontalAlignment
 import com.itextpdf.layout.property.TextAlignment
 import com.itextpdf.text.DocumentException
 import com.journeyapps.barcodescanner.BarcodeEncoder
+import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -44,6 +48,7 @@ import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
+@Suppress("DEPRECATION")
 class LectureSetup : AppCompatActivity() {
 
     private val storagerequestcode = 101
@@ -53,6 +58,7 @@ class LectureSetup : AppCompatActivity() {
     private lateinit var toolbar: Toolbar
     private lateinit var spinner: Spinner
     private lateinit var dateText: TextView
+    private lateinit var coordi: TextView
     private lateinit var timeText: TextView
     private lateinit var generateBtn: Button
     private lateinit var succesText: TextView
@@ -111,11 +117,12 @@ class LectureSetup : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
 
-       // spinner = findViewById(R.id.v_classrooms)
+       spinner = findViewById(R.id.v_classrooms)
 
 
         selectDate = findViewById(R.id.v_setDate)
         selectTime = findViewById(R.id.v_setTime)
+        coordi = findViewById(R.id.v_cordinates)
         courseText = findViewById(R.id.c_coursename)
 
         succesText = findViewById(R.id.v_checked_Text)
@@ -126,101 +133,144 @@ class LectureSetup : AppCompatActivity() {
 
 
 
+      setUpLocationListener()
+
+
+
+
 
         generateBtn.text = "Generate"
         val user = ParseUser.getCurrentUser()
         val courseCode = user.getString("code").toString()
 
+        val classrooms= arrayListOf<String>()
+        classrooms.add(0,"select a classrom")
 
 
-        val level=user.getString("level").toString()
 
-         ParseQuery.getQuery<ParseObject>("Student").whereEqualTo("level", level).findInBackground { objects, e ->
+         ParseQuery.getQuery<ParseObject>("ClassRoom").findInBackground { objects, e ->
              if(e == null )
              {
-                 val classrooms= arrayListOf<String>()
+
                  objects.forEach {
-                     classrooms.add(it.getString("userName").toString())
+                     classrooms.add(it.getString("lectureHall").toString())
                  }
 
-                 val adapter= ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,classrooms)
-                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-                // spinner.adapter=adapter
+
              }else{
                  Toast.makeText(applicationContext,e.message,Toast.LENGTH_LONG).show()
              }
          }
-
+        val adapter= ArrayAdapter(applicationContext,android.R.layout.simple_spinner_item,classrooms)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter=adapter
+        spinner.setSelection(0)
 
 
         courseText.setText(courseCode)
 
         generateBtn.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Submit?")
-                .setMessage("Do you want to confirm current lecture setup?")
-                .setPositiveButton("Yes") {
-                        dialog, _ ->
 
-                    val date = dateText.text.trim().toString()
+            val date = dateText.text.trim().toString()
 
-                    val time = timeText.text.trim().toString()
+            val time = timeText.text.trim().toString()
 
 
-                    val current= getRandomString(10)
-                    val className="CustomData"
-
-                    val obj = ParseObject.create(className)
+            val current= getRandomString(10)
 
 
-                    val queryCode: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className)
 
-                    val value:String = courseCode.replace("\\s".toRegex(), "")
+            val appSecreteCode = "$time $date $courseCode $current YHWH"
 
-                    queryCode.whereEqualTo("course",value)
+            if (date == ("") || time == "") {
+                Toast.makeText(
+                    applicationContext,
+                    "Please set date and time to generate code",
+                    Toast.LENGTH_LONG
+                ).show()
 
-                    queryCode.getFirstInBackground { `object`, e ->
+            }
+           else if(spinner.selectedItemPosition == 0) {
+                Toast.makeText(
+                    applicationContext,
+                    "Please select a room for lecture",
+                    Toast.LENGTH_LONG
+                ).show()
 
-                        if(e == null)
-                        {
-                            `object`.increment("totalLectures")
-                            `object`.put("latestCode",current)
+            }else{
+                AlertDialog.Builder(this)
+                    .setTitle("Submit?")
+                    .setMessage("Do you want to confirm current lecture setup?")
+                    .setPositiveButton("Yes") {
+                            dialog, _ ->
 
-                            `object`.saveEventually()
 
-                        }else{
-                            if(e.code == com.parse.ParseException.OBJECT_NOT_FOUND){
+                        val spinnerItem=spinner.selectedItem.toString()
 
-                                obj.put("course",value)
-                                obj.put("latestCode",current)
-                                obj.put("totalLectures",1)
+                        Toast.makeText(applicationContext,spinnerItem,Toast.LENGTH_LONG).show()
 
-                                obj.saveEventually()
 
+
+
+
+
+                        val coordinate=ParseQuery.getQuery<ParseObject>("ClassRoom").whereEqualTo("lectureHall",spinnerItem).first
+
+                        val latitude=coordinate.get("latitude")
+                        val longitude=coordinate.get("longitude")
+
+
+
+
+                        val className="CustomData"
+
+                        val obj = ParseObject.create(className)
+
+
+                        val queryCode: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className)
+
+                        val value:String = courseCode.replace("\\s".toRegex(), "")
+
+                        queryCode.whereEqualTo("course",value)
+
+                        queryCode.getFirstInBackground { `object`, e ->
+
+                            if(e == null)
+                            {
+                                `object`.increment("totalLectures")
+                                `object`.put("latestCode",current)
+                                `object`.put("latitude", latitude!!)
+                                `object`.put("longitude", longitude!!)
+
+                                `object`.saveEventually()
+
+                            }else{
+                                when (e.code) {
+                                    ParseException.OBJECT_NOT_FOUND -> {
+
+                                        obj.put("course",value)
+                                        obj.put("latestCode",current)
+                                        obj.put("totalLectures",1)
+                                        obj.put("latitude", latitude!!)
+                                        obj.put("longitude", longitude!!)
+
+
+                                        obj.saveEventually()
+
+                                    }
+                                    ParseException.CONNECTION_FAILED -> {
+                                        Toast.makeText(this,"No internet detected",Toast.LENGTH_LONG).show()
+
+
+                                    }
+                                    else -> {
+                                        Toast.makeText(this,e.message,Toast.LENGTH_LONG).show()
+                                    }
+                                }
                             }
+
                         }
-
-                    }
-
-
-
-
-
-
-                    val appSecreteCode = "$time $date $courseCode $current YHWH"
-
-                    if (date == ("") || time == "") {
-                        Toast.makeText(
-                            applicationContext,
-                            "Please set date and time to generate code",
-                            Toast.LENGTH_LONG
-                        ).show()
-
-
-
-
-                    } else {
 
                         if (generateBtn.text != "Print") {
                             val writer = MultiFormatWriter()
@@ -254,15 +304,19 @@ class LectureSetup : AppCompatActivity() {
                         }
 
 
+
+
+
+                        dialog.dismiss()
                     }
+                    .setNegativeButton("No"){
+                            dialog,_->dialog.dismiss()
+                    }
+                    .show()
+            }
 
 
-                    dialog.dismiss()
-                }
-                .setNegativeButton("No"){
-                        dialog,_->dialog.dismiss()
-                }
-                .show()
+
 
 
 
@@ -310,14 +364,16 @@ class LectureSetup : AppCompatActivity() {
 
                 val calendar1 = Calendar.getInstance()
                 calendar1.set(0, 0, 0, picker.hour, picker.minute)
-                val olddate = hours24.format(calendar1.time)
+                val oldDate = hours24.format(calendar1.time)
 
-                calendar1.add(Calendar.MINUTE,20)
+
+                //minutes to be added
+                calendar1.add(Calendar.MINUTE,60)
 
 
                 val newdate = hours24.format(calendar1.time)
 
-                timeText.text = "$olddate $newdate"
+                timeText.text = "$oldDate $newdate"
 
 
             }
@@ -456,6 +512,33 @@ class LectureSetup : AppCompatActivity() {
         }
 
 
+    }
+
+
+    @SuppressLint("MissingPermission")
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        coordi = findViewById(R.id.v_cordinates)
+
+
+        val locationRequest = LocationRequest.create().apply {
+            setInterval(2000).fastestInterval = 2000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+                override fun onLocationResult(p0: LocationResult) {
+                    for ( i in p0.locations){
+                        val latitude=i.latitude
+                        val longitude=i.longitude
+
+                        coordi.text = "Latitude :$latitude\nLongitude :$longitude"
+                    }
+                }
+            }, Looper.myLooper()!!)
     }
 
     private fun printPDF() {

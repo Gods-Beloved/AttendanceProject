@@ -33,7 +33,13 @@
 
         </activity>
 
-        <activity android:name=".PdfViewActivity">
+        <activity android:name=".util.PdfViewActivityStudent"
+            android:parentActivityName=".MainActivity"
+            />
+
+        <activity android:name=".PdfViewActivity"
+            android:parentActivityName=".Lecturer"
+            >
 
         </activity>
         <activity
@@ -66,7 +72,9 @@
             android:theme="@style/Theme.StudentCatalogue.mainActivity">
 
         </activity>
-        <activity android:name=".Scanner" />
+        <activity android:name=".Scanner"
+            android:parentActivityName=".course.CourseEnroll"
+            />
         <activity
             android:name=".signin.StudentVerification"
             android:theme="@style/Theme.StudentCatalogue.slidrActivity" />

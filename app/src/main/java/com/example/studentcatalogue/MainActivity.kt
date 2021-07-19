@@ -18,6 +18,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.example.studentcatalogue.course.CourseEnroll
 import com.example.studentcatalogue.course.TotalLecturers
 import com.example.studentcatalogue.signin.LoginType
+import com.example.studentcatalogue.util.PdfViewActivityStudent
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.textfield.TextInputEditText
@@ -231,7 +232,7 @@ closeDrawer()
     }
 
     private fun timetableStudent() {
-        val intent = Intent(applicationContext, PdfViewActivity::class.java)
+        val intent = Intent(applicationContext, PdfViewActivityStudent::class.java)
         startActivity(intent)
     }
 

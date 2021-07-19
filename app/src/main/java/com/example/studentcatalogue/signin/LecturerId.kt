@@ -20,7 +20,7 @@ import com.r0adkll.slidr.Slidr
 
 class LecturerId : AppCompatActivity() {
 
-    private lateinit var lecturer_signUp:EditText
+    private lateinit var lectureSignup:EditText
 
     private lateinit var constraintLayout: ConstraintLayout
 
@@ -44,14 +44,14 @@ class LecturerId : AppCompatActivity() {
 
 
 
-       lecturer_signUp= findViewById(R.id.v_username)
+       lectureSignup= findViewById(R.id.v_username)
 
-        val lecturerId = lecturer_signUp.text.toString()
-
-
+        val lecturerId = lectureSignup.text.toString()
 
 
-        if (lecturer_signUp.text.isEmpty()) {
+
+
+        if (lectureSignup.text.isEmpty()) {
 
             showSnackbar(constraintLayout,"Enter your lecturer ID number")
 
@@ -78,18 +78,26 @@ class LecturerId : AppCompatActivity() {
                     dialog.dismiss()
 
                 } else {
-                    if (e.code == ParseException.OBJECT_NOT_FOUND) {
+                    when (e.code) {
+                        ParseException.OBJECT_NOT_FOUND -> {
 
-                        dialog.dismiss()
-                        Toast.makeText(
+                            dialog.dismiss()
+                            Toast.makeText(
                                 this,
                                 "Lecturer with Id $lecturerId was not found in the current semester.Contact your Head of Department",
                                 Toast.LENGTH_LONG
-                        ).show()
+                            ).show()
 
-                    } else {
-                        dialog.dismiss()
-                        Toast.makeText(this, e.message + e.code.toString(), Toast.LENGTH_LONG).show()
+                        }
+                        ParseException.CONNECTION_FAILED -> {
+                            dialog.dismiss()
+                            ParseUser.logOut()
+                            Toast.makeText(applicationContext,"No internet detected",Toast.LENGTH_LONG).show()
+                        }
+                        else -> {
+                            dialog.dismiss()
+                            Toast.makeText(this, e.message + e.code.toString(), Toast.LENGTH_LONG).show()
+                        }
                     }
 
                     //shimmer.stopShimmer()
@@ -144,14 +152,22 @@ class LecturerId : AppCompatActivity() {
                 intent.putExtra("username", username)
                 startActivity(intent)
             } else {
-                if (it.code == ParseException.USERNAME_TAKEN) {
-                    ParseUser.logOut()
-                    val intent = Intent(applicationContext, LecturerVerification::class.java)
-                    intent.putExtra("username", username)
-                    startActivity(intent)
-                } else {
-                    Toast.makeText(this, it.code.toString(), Toast.LENGTH_LONG).show()
-                    ParseUser.logOut()
+                when (it.code) {
+                    ParseException.USERNAME_TAKEN -> {
+                        ParseUser.logOut()
+                        val intent = Intent(applicationContext, LecturerVerification::class.java)
+                        intent.putExtra("username", username)
+                     //   intent.putExtra("lecturerID",)
+                        startActivity(intent)
+                    }
+                    ParseException.CONNECTION_FAILED -> {
+                        ParseUser.logOut()
+                        Toast.makeText(applicationContext,"No internet detected",Toast.LENGTH_LONG).show()
+                    }
+                    else -> {
+                        Toast.makeText(this, it.code.toString(), Toast.LENGTH_LONG).show()
+                        ParseUser.logOut()
+                    }
                 }
 
                 //                shimmer.stopShimmer()

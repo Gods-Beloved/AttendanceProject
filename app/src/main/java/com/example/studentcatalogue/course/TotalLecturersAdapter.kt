@@ -2,15 +2,20 @@ package com.example.studentcatalogue.course
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentcatalogue.R
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.google.android.material.progressindicator.LinearProgressIndicator
+import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -33,6 +38,8 @@ class TotalLecturersAdapter(val context: Context?) :
         val courseLecturer: TextView = itemView.findViewById(R.id.v_student_lecturer_name)
         val courseCode: TextView = itemView.findViewById(R.id.v_indexNumber_coursecode)
         val courseTotal: TextView = itemView.findViewById(R.id.v_total)
+        val progressBar:ProgressBar= itemView.findViewById(R.id.progress_bar)
+
 
 
         val shimmerFrameLayout: ShimmerFrameLayout = itemView.findViewById(R.id.v_shimmer)
@@ -104,24 +111,50 @@ class TotalLecturersAdapter(val context: Context?) :
                     if (e2 == null) {
                         try {
 
-                            val total = objects2.getInt("classAttended").toString()
+                            val total = objects2.getInt("classAttended")
 
                             val className3="CustomData"
 
-                            val user = ParseUser.getCurrentUser()
+
                             val codeNew = objects[position].getString("code").toString().replace("\\s".toRegex(), "")
 
 
                             val queryTotal= ParseQuery.getQuery<ParseObject>(className3)
-                                .whereEqualTo("course",codeNew).first.getInt("totalLectures").toString()
+                                .whereEqualTo("course",codeNew).first.getInt("totalLectures")
 
-                            holder.courseTotal.setTextColor(Color.BLUE)
-                            holder.courseTotal.setBackgroundResource(0)
-                            holder.courseTotal.text = "${total}/$queryTotal"
+                            holder.progressBar.max=queryTotal
+                            holder.progressBar.progress=total
+
+
+
+                            if (queryTotal-total > 3){
+
+                                holder.courseTotal.setTextColor(ContextCompat.getColor(context!!,R.color.red2))
+
+                                holder.progressBar.progressTintList= ColorStateList.valueOf(Color.RED)
+
+                                holder.courseTotal.text = "${total}/${queryTotal}"
+                                holder.courseTotal.setBackgroundResource(0)
+
+                                holder.shimmerFrameLayout.stopShimmer()
+                                holder.shimmerFrameLayout.hideShimmer()
+
+                            }else{
+
+
+                                holder.courseTotal.setTextColor(Color.BLUE)
+                                holder.courseTotal.setBackgroundResource(0)
+                                holder.courseTotal.text = "${total}/$queryTotal"
+
+                                holder.shimmerFrameLayout.stopShimmer()
+                                holder.shimmerFrameLayout.hideShimmer()
+
+                            }
+
 
 
                         } catch (e: IndexOutOfBoundsException) {
-                            val total = objects2.getInt("classAttended")
+
 
                             holder.courseTotal.setTextColor(Color.BLUE)
                             holder.courseTotal.setBackgroundResource(0)
@@ -135,22 +168,35 @@ class TotalLecturersAdapter(val context: Context?) :
 
                     } else {
 
-                        holder.courseTotal.setTextColor(Color.BLUE)
-                        holder.courseTotal.setBackgroundResource(0)
-                        holder.courseTotal.text = "0"
-                        holder.shimmerFrameLayout.stopShimmer()
-                        holder.shimmerFrameLayout.hideShimmer()
+                        if (e2.code == ParseException.CONNECTION_FAILED){
+                            Toast.makeText(context,"No internet detected",Toast.LENGTH_LONG).show()
+                        }else{
+                            holder.courseTotal.setTextColor(Color.BLUE)
+                            holder.courseTotal.setBackgroundResource(0)
+                            holder.courseTotal.text = "0"
+                            holder.shimmerFrameLayout.stopShimmer()
+                            holder.shimmerFrameLayout.hideShimmer()
+                        }
+
+
 
                     }
 
                 }
 
             } else {
-                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                holder.shimmerFrameLayout.stopShimmer()
-                holder.shimmerFrameLayout.hideShimmer()
 
+                if (e.code == ParseException.CONNECTION_FAILED){
+                    Toast.makeText(context,"No internet detected",Toast.LENGTH_LONG).show()
+                    holder.shimmerFrameLayout.stopShimmer()
+                    holder.shimmerFrameLayout.hideShimmer()
 
+                }else {
+                    Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                    holder.shimmerFrameLayout.stopShimmer()
+                    holder.shimmerFrameLayout.hideShimmer()
+
+                }
             }
 
             holder.shimmerFrameLayout.stopShimmer()

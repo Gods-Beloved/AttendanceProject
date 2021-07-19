@@ -120,14 +120,14 @@
 
         </LinearLayout>
 
-<!--        <Spinner-->
-<!--            android:id="@+id/v_classrooms"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_margin="8dp"-->
-<!--            android:layout_gravity="start"-->
-<!--            android:backgroundTint="@color/black"-->
-<!--            android:spinnerMode="dropdown"-->
-<!--            android:layout_height="wrap_content"/>-->
+        <Spinner
+            android:id="@+id/v_classrooms"
+            android:layout_width="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_gravity="start"
+            android:backgroundTint="@color/black"
+            android:spinnerMode="dropdown"
+            android:layout_height="wrap_content"/>
 
 
         <com.google.android.material.button.MaterialButton
@@ -166,5 +166,17 @@
 
     </LinearLayout>
 
+    <TextView
+        android:id="@+id/v_cordinates"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="216dp"
+        android:text="Cordinates"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

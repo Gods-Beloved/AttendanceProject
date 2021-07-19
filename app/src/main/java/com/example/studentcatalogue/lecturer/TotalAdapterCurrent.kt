@@ -10,6 +10,7 @@ import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.example.studentcatalogue.R
 import com.facebook.shimmer.ShimmerFrameLayout
+import com.parse.ParseException
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import com.parse.ParseUser
@@ -66,9 +67,9 @@ class TotalAdapterCurrent(val context: Context?) : RecyclerView.Adapter<TotalAda
     override fun getItemCount(): Int {
         val user = ParseUser.getCurrentUser()
         val className2 = user.getString("code").toString().replace("\\s".toRegex(), "")
-        val querystudents: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className2).whereEqualTo("checked",true)
+        val queryStudents: ParseQuery<ParseObject> = ParseQuery.getQuery<ParseObject>(className2).whereEqualTo("checked",true)
 
-        return querystudents.count()
+        return queryStudents.count()
         //size.count()
     }
 
@@ -106,8 +107,17 @@ class TotalAdapterCurrent(val context: Context?) : RecyclerView.Adapter<TotalAda
 
             } else {
 
-                holder.shimmerFrameLayout.stopShimmer()
-                holder.shimmerFrameLayout.hideShimmer()
+                if (e.code == ParseException.CONNECTION_FAILED){
+                    Toast.makeText(context,"No internet detected",Toast.LENGTH_LONG).show()
+                    holder.shimmerFrameLayout.stopShimmer()
+                    holder.shimmerFrameLayout.hideShimmer()
+
+                }else{
+                    holder.shimmerFrameLayout.stopShimmer()
+                    holder.shimmerFrameLayout.hideShimmer()
+                }
+
+
 
 
             }

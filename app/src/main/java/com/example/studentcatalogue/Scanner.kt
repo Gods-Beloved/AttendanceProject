@@ -1,4 +1,4 @@
- package com.example.studentcatalogue
+package com.example.studentcatalogue
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -9,6 +9,7 @@ import android.view.View
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import com.budiyev.android.codescanner.*
 import com.example.studentcatalogue.course.CourseEnroll
 import com.example.studentcatalogue.util.PermissionUtil
@@ -26,135 +27,136 @@ import java.util.*
 import kotlin.math.*
 
 
- class Scanner : AppCompatActivity() {
+class Scanner : AppCompatActivity() {
 
 
-     private lateinit var codeScanner: CodeScanner
+    private lateinit var codeScanner: CodeScanner
 
-     private lateinit var codeScannerView: CodeScannerView
+    private lateinit var codeScannerView: CodeScannerView
 
-     private lateinit var successText: TextView
+    private lateinit var successText: TextView
 
-     private lateinit var timer: TextView
+    private lateinit var timer: TextView
 
-     private val startTimeInMilliSeconds = 300000L
+    private val startTimeInMilliSeconds = 300000L
 
-     private lateinit var countTime: CountDownTimer
+    private lateinit var countTime: CountDownTimer
 
-     var timerIsRunning: Boolean = false
+    var timerIsRunning: Boolean = false
 
-     private var timerEnd: Long? = null
+    private var timerEnd: Long? = null
 
-     var timeLeftInMilli = startTimeInMilliSeconds
+    var timeLeftInMilli = startTimeInMilliSeconds
 
-     private val locationrequestcode = 102
-
-
-     private lateinit var lectureCode: TextView
-
-     private val millisLeft = "millisLeft"
-     private val timerRunnig = "timerRunning"
-     private val endTime = "endTime"
-     private val prefs = "prefs"
+    private val locationRequestCode = 102
 
 
-     override fun onStart() {
-         super.onStart()
+
+    private lateinit var codeResults: TextView
+
+    private val millisLeft = "millisLeft"
+    private val timerRunnig = "timerRunning"
+    private val endTime = "endTime"
+    private val prefs = "prefs"
 
 
-         val prefs = getSharedPreferences(prefs, Context.MODE_PRIVATE)
+    override fun onStart() {
+        super.onStart()
 
-         timeLeftInMilli = prefs.getLong(millisLeft, startTimeInMilliSeconds)
-         timerIsRunning = prefs.getBoolean(timerRunnig, false)
-         updateCountDowntText()
 
-         if (timerIsRunning) {
-             successText.visibility = View.VISIBLE
+        val prefs = getSharedPreferences(prefs, Context.MODE_PRIVATE)
 
-             lectureCode.visibility =
-                 View.GONE
-             codeScannerView.visibility =
-                 View.GONE
-             timerEnd = prefs.getLong(endTime, 0)
-             timeLeftInMilli = timerEnd!! - System.currentTimeMillis()
+        timeLeftInMilli = prefs.getLong(millisLeft, startTimeInMilliSeconds)
+        timerIsRunning = prefs.getBoolean(timerRunnig, false)
+        updateCountDowntText()
 
-             if (timeLeftInMilli < 0) {
+        if (timerIsRunning) {
+            successText.visibility = View.VISIBLE
 
-                 // timeLeftInMilli=0
-                 timerIsRunning = false
-                 resetTimer()
+            codeResults.visibility =
+                View.GONE
+            codeScannerView.visibility =
+                View.GONE
+            timerEnd = prefs.getLong(endTime, 0)
+            timeLeftInMilli = timerEnd!! - System.currentTimeMillis()
 
-                 successText.visibility = View.GONE
-                 lectureCode.visibility =
-                     View.VISIBLE
-                 codeScannerView.visibility =
-                     View.VISIBLE
+            if (timeLeftInMilli < 0) {
 
-             } else {
-                 startTimer()
-             }
-         }
+                // timeLeftInMilli=0
+                timerIsRunning = false
+                resetTimer()
 
-         when {
-             PermissionUtil.isAccessFineLocationGranted(this) -> {
-                 when {
-                     PermissionUtil.isLocationEnabled(this) -> {
-                         setUpLocationListener()
-                     }
-                     else -> {
-                         PermissionUtil.showGPSNotEnabledDialog(this)
-                     }
+                successText.visibility = View.GONE
+                codeResults.visibility =
+                    View.VISIBLE
+                codeScannerView.visibility =
+                    View.VISIBLE
+
+            } else {
+                startTimer()
+            }
+        }
+
+        when {
+            PermissionUtil.isAccessFineLocationGranted(this) -> {
+                when {
+                    PermissionUtil.isLocationEnabled(this) -> {
+                        setUpLocationListener()
+                    }
+                    else -> {
+                        PermissionUtil.showGPSNotEnabledDialog(this)
+                    }
                 }
-             }
-             else -> {
-                 PermissionUtil.requestAccessFineLocationPermission(
-                     this,
-                     locationrequestcode
-                 )
-             }
-         }
-     }
+            }
+            else -> {
+                PermissionUtil.requestAccessFineLocationPermission(
+                    this,
+                    locationRequestCode
+                )
+            }
+        }
+    }
 
-     override fun onStop() {
-         super.onStop()
+    override fun onStop() {
+        super.onStop()
 
-         val prefs = getSharedPreferences(prefs, Context.MODE_PRIVATE)
+        val prefs = getSharedPreferences(prefs, Context.MODE_PRIVATE)
 
-         val editor = prefs.edit()
+        val editor = prefs.edit()
 
-         editor.putLong(millisLeft, timeLeftInMilli)
-         editor.putBoolean(timerRunnig, timerIsRunning)
-         timerEnd?.let { editor.putLong(endTime, it) }
-
-
-
-         editor.apply()
-
-
-     }
-
-     @SuppressLint("MissingPermission")
-     private fun setUpLocationListener() {
-         val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+        editor.putLong(millisLeft, timeLeftInMilli)
+        editor.putBoolean(timerRunnig, timerIsRunning)
+        timerEnd?.let { editor.putLong(endTime, it) }
 
 
 
-         val locationRequest = LocationRequest.create().apply {
-             setInterval(2000).fastestInterval = 2000
-             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-         }
+        editor.apply()
 
 
-         fusedLocationProviderClient.requestLocationUpdates(
-             locationRequest,
-             object : LocationCallback() {
-        }, Looper.myLooper()!!)
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun setUpLocationListener() {
+        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this)
+
+
+
+        val locationRequest = LocationRequest.create().apply {
+            setInterval(2000).fastestInterval = 2000
+            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+
+        fusedLocationProviderClient.requestLocationUpdates(
+            locationRequest,
+            object : LocationCallback() {
+            }, Looper.myLooper()!!)
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            locationrequestcode -> {
+            locationRequestCode -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     when {
                         PermissionUtil.isLocationEnabled(this) -> {
@@ -166,14 +168,16 @@ import kotlin.math.*
                     }
                 } else {
                     Toast.makeText(
-                            this,
-                            "Permission not granted",
-                            Toast.LENGTH_LONG
+                        this,
+                        "Permission not granted",
+                        Toast.LENGTH_LONG
                     ).show()
                 }
             }
         }
     }
+
+   private lateinit var toolbar: Toolbar
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -181,7 +185,15 @@ import kotlin.math.*
         setContentView(R.layout.activity_scanner)
 
 
-        lectureCode = findViewById(R.id.v_display_view)
+toolbar=findViewById(R.id.toolbar_qrcode)
+
+        setSupportActionBar(toolbar)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+
+
+        codeResults = findViewById(R.id.v_display_view)
         timer = findViewById(R.id.v_Timer)
         successText = findViewById(R.id.v_successText)
 
@@ -198,7 +210,7 @@ import kotlin.math.*
 
         codeScannerView = findViewById(R.id.v_code_scanner)
 
-        lectureCode = findViewById(R.id.v_display_view)
+        codeResults = findViewById(R.id.v_display_view)
 
         codeScanner = CodeScanner(this, codeScannerView)
 
@@ -224,7 +236,11 @@ import kotlin.math.*
 
                     if (extras != null) {
                         value = extras.getString("courseCode").toString()
+
                         val current = extras.getString("codeGen").toString()
+
+                        val longitudeFinal = extras.getDouble("longitude")
+                        val latitudeFinal = extras.getDouble("latitude")
 
 
                         val resultText = it.text.toString()
@@ -253,196 +269,205 @@ import kotlin.math.*
                                     dialog.cancel()
 
                                 }
-                                    .setPositiveButton("ACCEPT") { dialog, _ ->
-                                        lectureCode.text = it.text.toString()
+                                .setPositiveButton("ACCEPT") { dialog, _ ->
+                                 //   codeResults.text = it.text.toString()
 
-                                        val timeOne = it.text.substring(0, 8)
+                                    val timeOne = it.text.substring(0, 8)
 
-                                        val timeTwo = it.text.substring(9, 17)
+                                    val timeTwo = it.text.substring(9, 17)
 
-                                        val dateformat = object : SimpleDateFormat("HH:mm:ss") {}
+                                    val dateformat = object : SimpleDateFormat("HH:mm:ss") {}
 
-                                        val calTime = Calendar.getInstance().time
+                                    val calTime = Calendar.getInstance().time
 
-                                        val currentTime = dateformat.format(calTime)
+                                    val currentTime = dateformat.format(calTime)
 
-                                        val time1 = object : SimpleDateFormat("HH:mm:ss") {}.parse(timeOne)
-                                        val calendar1 = Calendar.getInstance()
-                                        calendar1.time = time1!!
-                                        calendar1.add(Calendar.DATE, 1)
-
-
-                                        val time2 = object : SimpleDateFormat("HH:mm:ss") {}.parse(timeTwo)
-                                        val calendar2 = Calendar.getInstance()
-                                        calendar2.time = time2!!
-                                        calendar2.add(Calendar.DATE, 1)
-
-                                        val d = object : SimpleDateFormat("HH:mm:ss") {}.parse(currentTime)
-                                        val calendar3 = Calendar.getInstance()
-                                        calendar3.time = d!!
-                                        calendar3.add(Calendar.DATE, 1)
-
-                                        val x = calendar3.time
+                                    val time1 = object : SimpleDateFormat("HH:mm:ss") {}.parse(timeOne)
+                                    val calendar1 = Calendar.getInstance()
+                                    calendar1.time = time1!!
+                                    calendar1.add(Calendar.DATE, 1)
 
 
-                                        if (x.after(calendar1.time) && x.before(calendar2.time)) {
-                                            Toast.makeText(this@Scanner, "On time", Toast.LENGTH_LONG).show()
-                                            var latitudeInit: Double
+                                    val time2 = object : SimpleDateFormat("HH:mm:ss") {}.parse(timeTwo)
+                                    val calendar2 = Calendar.getInstance()
+                                    calendar2.time = time2!!
+                                    calendar2.add(Calendar.DATE, 1)
 
-                                            var longitudeInit: Double
-                                            val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+                                    val d = object : SimpleDateFormat("HH:mm:ss") {}.parse(currentTime)
+                                    val calendar3 = Calendar.getInstance()
+                                    calendar3.time = d!!
+                                    calendar3.add(Calendar.DATE, 1)
 
-                                            val locationRequest = LocationRequest.create().apply {
-                                                setInterval(2000).fastestInterval = 2000
-                                                priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-                                            }
+                                    val x = calendar3.time
 
-                                            lateinit var locationCallback: LocationCallback
 
-                                            locationCallback = object : LocationCallback() {
-                                                override fun onLocationResult(locationResult: LocationResult?) {
-                                                    locationResult ?: return
-                                                    for (location in locationResult.locations) {
-                                                        longitudeInit = location.longitude
-                                                        latitudeInit = location.latitude
+                                    if (x.after(calendar1.time) && x.before(calendar2.time)) {
+                                        Toast.makeText(this@Scanner, "On time", Toast.LENGTH_LONG).show()
+                                        codeResults.text="On Time"
+                                        var latitudeInit: Double
 
-                                                        if (distance(
+                                        var longitudeInit: Double
+                                        val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(applicationContext)
+
+                                        val locationRequest = LocationRequest.create().apply {
+                                            setInterval(2000).fastestInterval = 2000
+                                            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+                                        }
+
+                                        lateinit var locationCallback: LocationCallback
+
+                                        locationCallback = object : LocationCallback() {
+                                            override fun onLocationResult(locationResult: LocationResult?) {
+                                                locationResult ?: return
+                                                for (location in locationResult.locations) {
+                                                    longitudeInit = location.longitude
+                                                    latitudeInit = location.latitude
+
+                                                    if (distance(
+                                                            latitudeFinal,
+                                                            longitudeFinal,
+
+                                                            6.6732,
+                                                            -1.5674
+//                                                            latitudeInit,
+//                                                            longitudeInit
+                                                        ) > 0.3
+                                                    ) {
+
+                                                        Toast.makeText(
+                                                            this@Scanner,
+                                                            "Attendance From Outside Lecture Hall Detected",
+                                                            Toast.LENGTH_LONG
+                                                        ).show()
+
+                                                        codeResults.text="Attendance From Outside Lecture Hall Detected"
+                                                        Toast.makeText(
+                                                            this@Scanner,
+                                                            distance(
                                                                 6.6732,
                                                                 -1.5674,
-                                                                6.6732,
-                                                                -1.5674
-                                                            ) > 0.3
-                                                        ) {
-
-                                                            Toast.makeText(
-                                                                this@Scanner,
-                                                                "You are outside class,If otherwise see lecturer for back log attendance",
-                                                                Toast.LENGTH_LONG
-                                                            ).show()
-                                                            Toast.makeText(
-                                                                this@Scanner,
-                                                                distance(
-                                                                    6.6732,
-                                                                    -1.5674,
-                                                                    latitudeInit,
-                                                                    longitudeInit
-                                                                ).toString(),
-                                                                Toast.LENGTH_LONG
-                                                            ).show()
-                                                            fusedLocationProviderClient.removeLocationUpdates(
-                                                                locationCallback
-                                                            )
-                                                        } else {
-                                                            fusedLocationProviderClient.removeLocationUpdates(
-                                                                locationCallback
-                                                            )
+                                                                latitudeInit,
+                                                                longitudeInit
+                                                            ).toString(),
+                                                            Toast.LENGTH_LONG
+                                                        ).show()
+                                                        fusedLocationProviderClient.removeLocationUpdates(
+                                                            locationCallback
+                                                        )
+                                                    } else {
+                                                        fusedLocationProviderClient.removeLocationUpdates(
+                                                            locationCallback
+                                                        )
 
 
-                                                            val currentUser =
-                                                                ParseUser.getCurrentUser()
+                                                        val currentUser =
+                                                            ParseUser.getCurrentUser()
 
 
-                                                            value = value.replace("\\s".toRegex(), "")
+                                                        value = value.replace("\\s".toRegex(), "")
 
 
-                                                            val obj = ParseObject.create(value)
+                                                        val obj = ParseObject.create(value)
 
-                                                            val query = ParseQuery.getQuery<ParseObject>(value)
-
-
-                                                            query.whereEqualTo("name", currentUser.getString("accountName"))
+                                                        val query = ParseQuery.getQuery<ParseObject>(value)
 
 
-                                                            query.getFirstInBackground { `object`, e ->
+                                                        query.whereEqualTo("name", currentUser.getString("accountName"))
 
 
-                                                                if (e == null) {
-                                                                    val valid=`object`.getBoolean("checked")
-                                                                    val username=`object`.getString("name").toString()
-                                                                    if (valid)
-                                                                    {
-                                                                        Toast.makeText(applicationContext,"$username has successful checked attendance",Toast.LENGTH_LONG).show()
-                                                                    }else{
-                                                                        `object`.increment("classAttended")
-                                                                        `object`.put("checked",true)
-                                                                        `object`.saveEventually()
-                                                                        if (timerIsRunning) {
-                                                                            codeScannerView.visibility =
-                                                                                View.GONE
-                                                                            successText.visibility =
-                                                                                View.VISIBLE
-
-                                                                        } else {
-
-                                                                            startTimer()
+                                                        query.getFirstInBackground { `object`, e ->
 
 
-                                                                        }
-                                                                    }
+                                                            if (e == null) {
+                                                                val valid=`object`.getBoolean("checked")
+                                                                val username=`object`.getString("name").toString()
+                                                                if (valid)
+                                                                {
+                                                                    Toast.makeText(applicationContext,"$username Has Already Checked Attendance",Toast.LENGTH_LONG).show()
+                                                                    codeResults.text="$username Has Already Checked Attendance."
+                                                                }else{
+                                                                    `object`.increment("classAttended")
+                                                                    `object`.put("checked",true)
+                                                                    `object`.saveEventually()
+                                                                    if (timerIsRunning) {
+                                                                        codeScannerView.visibility =
+                                                                            View.GONE
+                                                                        successText.visibility =
+                                                                            View.VISIBLE
 
+                                                                    } else {
 
-
-                                                                } else {
-                                                                    if (e.code == ParseException.OBJECT_NOT_FOUND) {
-
-
-                                                                        obj.put(
-                                                                            "name",
-                                                                            currentUser.getString("accountName")
-                                                                                .toString()
-                                                                        )
-                                                                        obj.put(
-                                                                            "indexNumber",
-                                                                            currentUser.getString("indexNumber")
-                                                                                .toString()
-                                                                        )
-                                                                        obj.put("classAttended", 1)
-                                                                        obj.put("checked",true)
-
-                                                                        obj.saveEventually()
-                                                                        if (timerIsRunning) {
-                                                                            successText.visibility =
-                                                                                View.VISIBLE
-
-                                                                            codeScannerView.visibility =
-                                                                                View.GONE
-                                                                        } else {
-
-                                                                            startTimer()
-
-
-                                                                        }
+                                                                        startTimer()
 
 
                                                                     }
                                                                 }
 
+
+
+                                                            } else {
+                                                                if (e.code == ParseException.OBJECT_NOT_FOUND) {
+
+
+                                                                    obj.put(
+                                                                        "name",
+                                                                        currentUser.getString("accountName")
+                                                                            .toString()
+                                                                    )
+                                                                    obj.put(
+                                                                        "indexNumber",
+                                                                        currentUser.getString("indexNumber")
+                                                                            .toString()
+                                                                    )
+                                                                    obj.put("classAttended", 1)
+                                                                    obj.put("checked",true)
+
+                                                                    obj.saveEventually()
+                                                                    if (timerIsRunning) {
+                                                                        successText.visibility =
+                                                                            View.VISIBLE
+
+                                                                        codeScannerView.visibility =
+                                                                            View.GONE
+                                                                    } else {
+
+                                                                        startTimer()
+
+
+                                                                    }
+
+
+                                                                }
                                                             }
 
-
-                                                            successText.visibility = View.VISIBLE
-                                                            codeScannerView.visibility = View.GONE
-
-                                                            dialog.dismiss()
                                                         }
+
+
+
+
+                                                        dialog.dismiss()
                                                     }
                                                 }
                                             }
-
-                                            fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper()!!)
-
-
-                                        } else {
-
-                                            Toast.makeText(this@Scanner, "You are late", Toast.LENGTH_SHORT).show()
                                         }
+
+                                        fusedLocationProviderClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper()!!)
+
+
+                                    } else {
+
+                                        Toast.makeText(this@Scanner, "Late Attendance Detected", Toast.LENGTH_SHORT).show()
+                                        codeResults.text="Late Attendance Detected"
                                     }
-                                    .show()
+                                }
+                                .show()
                         } else {
 
                             Toast.makeText(applicationContext, "Wrong Code Detected", Toast.LENGTH_SHORT).show()
-                            val resultText2 = it.text.toString()
-                            lectureCode.text = resultText2
+                            codeResults.text="Wrong Code Detected"
+                          //Code result text here
+                        //    val resultText2 = it.text.toString()
+
                         }
 
                     }
@@ -482,7 +507,7 @@ import kotlin.math.*
                 resetTimer()
 
                 successText.visibility = View.GONE
-                lectureCode.visibility = View.GONE
+                codeResults.visibility = View.GONE
                 codeScannerView.visibility = View.VISIBLE
 
             }
@@ -505,19 +530,19 @@ import kotlin.math.*
 
     }
 
-     private fun resetTimer() {
-         timeLeftInMilli = startTimeInMilliSeconds
-         updateCountDowntText()
-     }
+    private fun resetTimer() {
+        timeLeftInMilli = startTimeInMilliSeconds
+        updateCountDowntText()
+    }
 
 
-     private fun updateCountDowntText() {
-         val minutes2 = ((timeLeftInMilli / 1000) / 60).toInt()
-         val seconds2 = ((timeLeftInMilli / 1000) % 60).toInt()
+    private fun updateCountDowntText() {
+        val minutes2 = ((timeLeftInMilli / 1000) / 60).toInt()
+        val seconds2 = ((timeLeftInMilli / 1000) % 60).toInt()
 
-         val timeLeftFormated = String.format(Locale.getDefault(), "%02d:%02d", minutes2, seconds2)
+        val timeLeftFormated = String.format(Locale.getDefault(), "%02d:%02d", minutes2, seconds2)
 
-         timer.text = timeLeftFormated
+        timer.text = timeLeftFormated
     }
 
     override fun onResume() {
@@ -531,12 +556,12 @@ import kotlin.math.*
     }
 
 
-     private fun distance(
-         lat1: Double,
-         lng1: Double,
-         lat2: Double,
-         lng2: Double
-     ): Double {
+    private fun distance(
+        lat1: Double,
+        lng1: Double,
+        lat2: Double,
+        lng2: Double
+    ): Double {
 
         //college of science latitude 6.6732 longitude -1.5674
 

@@ -26,21 +26,13 @@
         android:checkable="true"
         />
 
-    <item
-        android:id="@+id/v_share"
-        android:title="Share"
-        android:checkable="true"
-        />
-
 <!--    <item-->
-<!--        android:title=""-->
-<!--        >-->
+<!--        android:id="@+id/v_share"-->
+<!--        android:title="Share"-->
+<!--        android:icon="@drawable/share"-->
+<!--        android:checkable="true"-->
+<!--        />-->
 
-<!--        <menu>-->
-
-<!--        </menu>-->
-
-<!--    </item>-->
 
 
 

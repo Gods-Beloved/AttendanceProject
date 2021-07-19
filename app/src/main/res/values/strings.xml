@@ -10,8 +10,8 @@
     1) Go to your App Dashboard at Back4App website.
     2) Navigate to app's settings : Click on Server Settings -> Core Settings block -> SETTINGS
     -->
-    <string name="back4app_app_id" translatable="false">LfIjxjSev0ARPSBh8XT34D5Z6KmitAtPyAm4kaMo</string>
-    <string name="back4app_client_key" translatable="false">QEvEEtgpCFhlByCtjtribkJT977tv8gsZojlNB5W</string>
+    <string name="back4app_app_id" translatable="false">u7W0SsNxFWrEQT5MBXMNRxtMr9kX2evNpYkAwHOZ</string>
+    <string name="back4app_client_key" translatable="false">nx3SjqFQSGHM6kQRfMb29tW85KytBXJZYkqZHWBn</string>
 
 
     //Zoom client keys
@@ -23,8 +23,16 @@
     <string name="drawerclose">Close</string>
 
     <string-array name="cummulate">
-        <item>Current</item>
-        <item>Total</item>
+        <item>Student Present</item>
+        <item>Total Students</item>
+
+    </string-array>
+
+    <string-array name="lectureLevel">
+        <item>one</item>
+        <item>two</item>
+        <item>three</item>
+        <item>four</item>
 
     </string-array>
 

@@ -102,9 +102,17 @@ class CourseAdapter(val context: Context?) : RecyclerView.Adapter<CourseAdapter.
                 holder.shimmerFrameLayout.hideShimmer()
 
             } else {
-                Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
-                holder.shimmerFrameLayout.stopShimmer()
-                holder.shimmerFrameLayout.hideShimmer()
+
+                if (e.code == ParseException.CONNECTION_FAILED){
+                    Toast.makeText(context,"No internet detected",Toast.LENGTH_LONG).show()
+                    holder.shimmerFrameLayout.stopShimmer()
+                    holder.shimmerFrameLayout.hideShimmer()
+                }else{
+                    Toast.makeText(context, e.message, Toast.LENGTH_LONG).show()
+                    holder.shimmerFrameLayout.stopShimmer()
+                    holder.shimmerFrameLayout.hideShimmer()
+                }
+
 
 
             }
@@ -129,6 +137,9 @@ queryCode.whereEqualTo("course",value)
             queryCode.getFirstInBackground { `object`, e ->
                 if (e == null){
                     val current= `object`.getString("latestCode").toString()
+                    val latitudeFinal= `object`.getDouble("latitude")
+                    val longitudeFinal= `object`.getDouble("longitude")
+
 
                     val position2 = holder.adapterPosition
 
@@ -137,6 +148,8 @@ queryCode.whereEqualTo("course",value)
 
                     val intent = Intent(context, Scanner::class.java)
                     intent.putExtra("courseCode", value2)
+                    intent.putExtra("longitude",longitudeFinal)
+                    intent.putExtra("latitude",latitudeFinal)
                     intent.putExtra("codeGen",current)
 
 
